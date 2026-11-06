@@ -1,0 +1,15 @@
+$kind: http-request
+description: Send a new message in a conversation.
+url: "{{baseUrl}}/chat/messages"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "conversationId": "<conversation_id>",
+      "content": "Hello, how can I help you?",
+      "type": "text"
+    }
+order: 3000

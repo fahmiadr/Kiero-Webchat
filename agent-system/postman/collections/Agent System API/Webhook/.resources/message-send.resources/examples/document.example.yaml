@@ -1,0 +1,49 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/webhook/external"
+  method: POST
+  body:
+    type: json
+    content: "{\r
+
+      \    \"event\": \"message:send\",\r
+
+      \    \"payload\": {\r
+
+      \        \"interactionId\": \"{{interactionId}}\",\r
+
+      \        \"content\": \"{{$randomLoremSentences}}\",\r
+
+      \        \"type\": \"document\", // \"text\", \"document\", \"image\",
+      \"video\", \"location\" \r
+
+      \        \"agentId\": \"{{agentId}}\", // id agent yang aktif handle\r
+
+      \        \"agentName\": \"{{agentName}}\", // nama agent yang aktif handle
+      \r
+
+      \        \"agentRole\": \"{{agentRole}}\", // rol agent yang aktif handle
+      \r
+
+      \        \"attachments\": [\r
+
+      \            {\r
+
+      \                \"fileUrl\":
+      \"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\
+      \"\r
+
+      \            }\r
+
+      \        ]\r
+
+      \    }\r
+
+      }"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: ""
+order: 3000

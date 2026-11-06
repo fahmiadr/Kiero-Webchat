@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve a single conversation by its ID, including messages.
+url: "{{baseUrl}}/chat/conversations/:conversationId"
+method: GET
+pathVariables:
+  conversationId: ""
+order: 2000

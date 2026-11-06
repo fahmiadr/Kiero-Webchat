@@ -1,0 +1,18 @@
+node_modules
+*.log
+*.env
+.env.*
+!.env.example.*
+dist
+build
+
+# Husky
+.husky/_
+
+# IDE and Tools
+.vscode/
+.idea/
+.agent/
+.agents/
+.shared/
+design-system/

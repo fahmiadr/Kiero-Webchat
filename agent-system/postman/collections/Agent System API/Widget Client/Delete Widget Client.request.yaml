@@ -1,0 +1,7 @@
+$kind: http-request
+description: Remove a widget client.
+url: "{{baseUrl}}/widget-clients/:clientId"
+method: DELETE
+pathVariables:
+  clientId: ""
+order: 5000

@@ -1,0 +1,34 @@
+$kind: http-request
+name: message:send
+description: Remove a webhook endpoint.
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"event\": \"message:send\",\r
+
+    \    \"payload\": {\r
+
+    \        \"interactionId\": \"{{interactionId}}\",\r
+
+    \        \"content\": \"{{$randomLoremSentences}}\",\r
+
+    \        \"type\": \"text\", // \"text\", \"document\", \"image\",
+    \"video\", \"location\" \r
+
+    \        \"agentId\": \"{{agentId}}\", // id agent yang aktif handle\r
+
+    \        \"agentName\": \"{{agentName}}\", // nama agent yang aktif handle
+    \r
+
+    \        \"agentRole\": \"{{agentRole}}\", // rol agent yang aktif handle \r
+
+    \        \"attachments\": []\r
+
+    \    }\r
+
+    }"
+examples: ./.resources/message-send.resources/examples
+order: 5000

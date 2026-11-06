@@ -1,0 +1,18 @@
+$kind: http-request
+description: Update widget client settings.
+url: "{{baseUrl}}/widget-clients/:clientId"
+method: PUT
+headers:
+  Content-Type: application/json
+pathVariables:
+  clientId: ""
+body:
+  type: text
+  content: |-
+    {
+      "name": "Updated Widget",
+      "settings": {
+        "theme": "dark"
+      }
+    }
+order: 4000

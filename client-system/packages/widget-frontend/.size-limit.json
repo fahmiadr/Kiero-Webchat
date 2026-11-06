@@ -1,0 +1,7 @@
+[
+    {
+        "name": "Widget Bundle (IIFE)",
+        "path": "dist/embed.iife.js",
+        "limit": "500 kB"
+    }
+]

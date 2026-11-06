@@ -1,0 +1,29 @@
+{
+  "name": "live-chat-widget",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --workspace=widget-frontend",
+    "dev:backend": "npm run dev --workspace=widget-backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "packages/widget-frontend/**/*.{js,jsx}": [
+      "npx -w widget-frontend @biomejs/biome check --write --unsafe",
+      "npx -w widget-frontend eslint --fix"
+    ],
+    "packages/widget-frontend/**/*.{json,css,md}": [
+      "npx -w widget-frontend @biomejs/biome format --write"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  }
+}

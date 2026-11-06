@@ -1,0 +1,3 @@
+$kind: collection
+description: Client-side error reporting endpoints.
+order: 8000

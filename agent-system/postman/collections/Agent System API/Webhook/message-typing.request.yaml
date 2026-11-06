@@ -1,0 +1,21 @@
+$kind: http-request
+name: message:typing
+description: Update an existing webhook configuration.
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "event": "message:typing",
+      "payload": {
+        "interactionId": "{{interactionId}}",
+        "isTyping": true,
+        "agentId": "{{agentId}}", // id agent yang aktif handle 
+        "agentName": "{{agentName}}", // nama agent yang aktif handle 
+        "agentRole": "{{agentRole}}" // role agent yang aktif handle 
+      }
+    }
+order: 4000

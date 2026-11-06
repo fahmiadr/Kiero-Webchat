@@ -1,0 +1,31 @@
+$kind: http-request
+name: chat:transfer
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"event\": \"chat:transfer\",\r
+
+    \  \"payload\": {\r
+
+    \    \"interactionId\": \"{{interactionId}}\",\r
+
+    \    \"agentId\": \"{{agentId}}\", // id agent yang handle sekarang\r
+
+    \    \"to\": {\r
+
+    \      \"agentId\": \"target_agent_002\",\r
+
+    \      \"agentName\": \"Agent Brown\",\r
+
+    \      \"agentRole\": \"agent eksternal 2\"\r
+
+    \    }\r
+
+    \  }\r
+
+    }"
+examples: ./.resources/chat-transfer.resources/examples
+order: 6000

@@ -1,0 +1,21 @@
+$kind: http-request
+description: Report a client-side error from the widget or frontend.
+url: "{{baseUrl}}/errors"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "message": "Uncaught TypeError: Cannot read property 'id' of undefined",
+      "stack": "TypeError: Cannot read property...\n    at Object.<anonymous>",
+      "source": "widget",
+      "metadata": {
+        "browser": "Chrome 120",
+        "url": "https://example.com/chat"
+      }
+    }
+auth:
+  type: noauth
+order: 1000

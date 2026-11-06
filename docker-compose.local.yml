@@ -1,0 +1,170 @@
+# =============================================================================
+# Live Chat Widget — Local Testing Compose (Simulates Production)
+#
+# Includes PostgreSQL locally for testing (unlike prod where DB is external).
+# All 6 services: PostgreSQL, Redis, Agent Backend/Frontend, Widget Backend/Frontend
+#
+# Usage:
+#   cp .env.example.local .env.local
+#   cp agent-system/apps/backend/.env.example.local   agent-system/apps/backend/.env.local
+#   cp client-system/packages/widget-backend/.env.example.local   client-system/packages/widget-backend/.env.local
+#   cp agent-system/apps/frontend/.env.example.local      agent-system/apps/frontend/.env.local
+#   cp client-system/packages/widget-frontend/.env.example.local  client-system/packages/widget-frontend/.env.local
+#   docker compose --env-file .env.local -f docker-compose.local.yml up -d --build
+# =============================================================================
+
+include:
+  - redis/docker-compose.yml
+  - database/docker-compose.yml
+
+services:
+  # ─────────────────────────────────────────────────────────────
+  # Agent Backend
+  # ─────────────────────────────────────────────────────────────
+  agent-backend:
+    build:
+      context: ./agent-system
+      dockerfile: docker/agent-backend.Dockerfile
+    container_name: agent-backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./agent-system/apps/backend/.env.local
+    ports:
+      - "127.0.0.1:${AGENT_BACKEND_PORT:-3003}:3003"
+    volumes:
+      - agent_uploads:/app/apps/uploads
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─────────────────────────────────────────────────────────────
+  # Agent Frontend
+  # ─────────────────────────────────────────────────────────────
+  agent-frontend:
+    build:
+      context: ./agent-system
+      dockerfile: docker/agent-frontend.Dockerfile
+      args:
+        - VITE_MODE=local
+    container_name: agent-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${AGENT_FRONTEND_PORT:-4172}:4172"
+    networks:
+      - frontend
+    depends_on:
+      agent-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4172/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # ─────────────────────────────────────────────────────────────
+  # Widget Backend
+  # ─────────────────────────────────────────────────────────────
+  widget-backend:
+    build:
+      context: ./client-system
+      dockerfile: docker/backend.Dockerfile
+    container_name: widget-backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./client-system/packages/widget-backend/.env.local
+    ports:
+      - "127.0.0.1:${WIDGET_BACKEND_PORT:-3002}:3002"
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─────────────────────────────────────────────────────────────
+  # Widget Frontend
+  # ─────────────────────────────────────────────────────────────
+  widget-frontend:
+    build:
+      context: ./client-system
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        - VITE_MODE=local
+    container_name: widget-frontend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:${WIDGET_FRONTEND_PORT:-4171}:4171"
+    networks:
+      - frontend
+    depends_on:
+      widget-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4171/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+# =================================================================
+# Networks
+# =================================================================
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+# =================================================================
+# Volumes
+# =================================================================
+volumes:
+  agent_uploads:
+    driver: local

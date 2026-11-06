@@ -1,0 +1,5 @@
+$kind: http-request
+description: Invalidate the current session / token.
+url: "{{baseUrl}}/auth/logout"
+method: POST
+order: 5000

@@ -1,0 +1,25 @@
+$kind: http-request
+name: chat:handle
+description: Meng-handle chat aktif (request agent)
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"event\": \"chat:handle\",\r
+
+    \  \"payload\": {\r
+
+    \    \"interactionId\": \"{{interactionId}}\",\r
+
+    \    \"agentId\": \"{{agentId}}\", // id agent yang akan handle \r
+
+    \    \"agentName\": \"{{agentName}}\", // nama agent yang akan handle \r
+
+    \    \"agentRole\": \"{{agentRole}}\" // role agent yang akan handle\r
+
+    \  }\r
+
+    }"
+order: 1000

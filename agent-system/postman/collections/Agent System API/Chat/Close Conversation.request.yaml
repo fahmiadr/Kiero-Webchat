@@ -1,0 +1,15 @@
+$kind: http-request
+description: Update conversation status (e.g. close it).
+url: "{{baseUrl}}/chat/conversations/:conversationId"
+method: PATCH
+headers:
+  Content-Type: application/json
+pathVariables:
+  conversationId: ""
+body:
+  type: text
+  content: |-
+    {
+      "status": "closed"
+    }
+order: 5000

@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve a specific audit log entry.
+url: "{{baseUrl}}/audit-logs/:logId"
+method: GET
+pathVariables:
+  logId: ""
+order: 2000

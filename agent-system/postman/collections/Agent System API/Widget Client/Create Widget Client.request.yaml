@@ -1,0 +1,19 @@
+$kind: http-request
+description: Register a new widget client for a domain.
+url: "{{baseUrl}}/widget-clients"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "My Website Widget",
+      "domain": "https://example.com",
+      "settings": {
+        "theme": "light",
+        "position": "bottom-right",
+        "greeting": "Hi! How can we help?"
+      }
+    }
+order: 2000

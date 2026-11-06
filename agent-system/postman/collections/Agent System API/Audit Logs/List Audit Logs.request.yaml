@@ -1,0 +1,22 @@
+$kind: http-request
+description: Retrieve audit logs with optional filters for action type and date range.
+url: "{{baseUrl}}/audit-logs?page=1&limit=50"
+method: GET
+queryParams:
+  - key: page
+    value: "1"
+  - key: limit
+    value: "50"
+  - key: action
+    value: login
+    disabled: true
+    description: Filter by action type
+  - key: startDate
+    value: 2024-01-01
+    disabled: true
+    description: Filter from date
+  - key: endDate
+    value: 2024-12-31
+    disabled: true
+    description: Filter to date
+order: 1000

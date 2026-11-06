@@ -1,0 +1,49 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/webhook/external"
+  method: POST
+  body:
+    type: json
+    content: "{\r
+
+      \    \"event\": \"message:send\",\r
+
+      \    \"payload\": {\r
+
+      \        \"interactionId\": \"{{interactionId}}\",\r
+
+      \        \"content\": \"{{$randomLoremSentences}}\",\r
+
+      \        \"type\": \"image\", // \"text\", \"document\", \"image\",
+      \"video\", \"location\" \r
+
+      \        \"agentId\": \"{{agentId}}\", // id agent yang aktif handle\r
+
+      \        \"agentName\": \"{{agentName}}\", // nama agent yang aktif handle
+      \r
+
+      \        \"agentRole\": \"{{agentRole}}\", // rol agent yang aktif handle
+      \r
+
+      \        \"attachments\": [\r
+
+      \            {\r
+
+      \                \"fileUrl\": \"https://placehold.co/600x400\",\r
+
+      \                \"meta\": { \"widht\": 600, \"height\": 400 }\r
+
+      \            }\r
+
+      \        ]\r
+
+      \    }\r
+
+      }"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: ""
+order: 4000

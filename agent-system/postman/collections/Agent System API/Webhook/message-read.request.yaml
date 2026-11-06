@@ -1,0 +1,22 @@
+$kind: http-request
+name: message:read
+description: Retrieve details of a specific webhook.
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"event\": \"message:read\",\r
+
+    \  \"payload\": {\r
+
+    \    \"interactionId\": \"{{interactionId}}\",\r
+
+    \    \"messageIds\": [\"MSG-001\"] // bisa batch mis. [\"MSG-001\",
+    \"MSG-002\", \"MSG-003\"]\r
+
+    \  }\r
+
+    }"
+order: 3000

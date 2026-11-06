@@ -1,0 +1,3 @@
+$kind: collection
+description: Chat / conversation / interaction endpoints for the live-chat system.
+order: 3000

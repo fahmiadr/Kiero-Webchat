@@ -1,0 +1,17 @@
+$kind: http-request
+description: Register a new agent account.
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "newagent@example.com",
+      "password": "password123",
+      "name": "New Agent"
+    }
+auth:
+  type: noauth
+order: 2000

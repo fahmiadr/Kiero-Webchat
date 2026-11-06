@@ -1,0 +1,5 @@
+$kind: http-request
+description: List all registered widget client configurations.
+url: "{{baseUrl}}/widget-clients"
+method: GET
+order: 1000

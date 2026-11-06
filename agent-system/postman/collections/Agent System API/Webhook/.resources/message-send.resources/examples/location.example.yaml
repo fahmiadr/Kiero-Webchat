@@ -1,0 +1,52 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/webhook/external"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: "{\r
+
+      \    \"event\": \"message:send\",\r
+
+      \    \"payload\": {\r
+
+      \        \"interactionId\": \"{{interactionId}}\",\r
+
+      \        \"content\":
+      \"https://www.google.com/maps?q=0.11727407514245997,117.47880845792078\",\
+      \r
+
+      \        \"type\": \"location\", // \"text\", \"document\", \"image\",
+      \"video\", \"location\" \r
+
+      \        \"agentId\": \"{{agentId}}\", // id agent yang aktif handle\r
+
+      \        \"agentName\": \"{{agentName}}\", // nama agent yang aktif handle
+      \r
+
+      \        \"agentRole\": \"{{agentRole}}\", // rol agent yang aktif handle
+      \r
+
+      \        \"meta\": {\r
+
+      \            \"address\": \"4F8H+WHC, Jl. Angkasa, Berbas Tengah, Kec.
+      Bontang Sel., Kota Bontang, Kalimantan Timur 75325, Indonesia\",\r
+
+      \            \"latitude\": 0.11727407514246,\r
+
+      \            \"longitude\": 117.4788084579208\r
+
+      \        }\r
+
+      \    }\r
+
+      }"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: ""
+order: 5000

@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve a specific widget client configuration.
+url: "{{baseUrl}}/widget-clients/:clientId"
+method: GET
+pathVariables:
+  clientId: ""
+order: 3000

@@ -1,0 +1,14 @@
+{
+    "name": "agent-system-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ],
+    "scripts": {
+        "setup": "npm install --workspaces",
+        "dev:frontend": "npm run dev --workspace=@agent-system/frontend",
+        "dev:backend": "npm run dev --workspace=@agent-system/backend",
+        "build": "npm run build --workspaces"
+    }
+}

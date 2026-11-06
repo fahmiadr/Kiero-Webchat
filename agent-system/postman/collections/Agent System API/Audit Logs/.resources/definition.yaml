@@ -1,0 +1,3 @@
+$kind: collection
+description: Audit log endpoints for tracking system activity and changes.
+order: 7000

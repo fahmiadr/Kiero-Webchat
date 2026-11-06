@@ -1,0 +1,4 @@
+$kind: collection
+description: Widget client management — create and configure chat widget
+  instances for embedding.
+order: 6000

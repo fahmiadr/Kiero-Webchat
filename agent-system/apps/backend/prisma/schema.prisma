@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Agent / User for the Dashboard
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String   @unique // Unique agent names for customer identification
+  role      String   @default("agent") // agent, admin
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+// Registered Widget Clients (Tenants) for security validation
+model WidgetClient {
+  id             Int      @id @default(autoincrement())
+  clientId       String   @unique @map("client_id") // Public identifier for widget (formerly pageId in interactions)
+  apiKey         String?  @unique @map("api_key") // Long-lived access token for external servers
+  name           String // Display name
+  allowedOrigins String[] @map("allowed_origins") // CORS origins whitelist
+  webhookUrl     String?  @map("webhook_url") // Client Webhook URL to receive events
+  webhookToken   String?  @map("webhook_token") // Token for Authorization header (Access Control)
+  webhookSecret  String?  @map("webhook_secret") // Secret for verifying webhook signatures (HMAC)
+  active         Boolean  @default(true)
+  theme          Json?    @map("theme") // JSON configuration for widget appearance
+  botConfig      Json?    @map("bot_config") // Custom Bot settings (welcome msg, keywords, etc)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  interactions Interaction[]
+
+  @@map("widget_clients")
+}
+
+// Represents a Chat Session / Thread
+model Interaction {
+  id            Int    @id @default(autoincrement())
+  interactionId String @unique @map("interaction_id")
+
+  clientId String       @map("client_id") // Was pageId
+  client   WidgetClient @relation(fields: [clientId], references: [clientId])
+
+  // Refactored Visitor ID (Unified)
+  visitorId String @map("visitor_id") // Formerly userId/customerId
+
+  name  String
+  email String?
+
+  // Current Handler Info (Lock)
+  agentHandle String? @map("agent_handle") // Current Unique Agent ID
+  agentName   String? @map("agent_name") // Current Display Name (Snapshot)
+
+  // History: Original Handler
+  handledBy     String? @map("handled_by") // First Agent ID
+  handledByName String? @map("handled_by_name") // First Agent Name
+
+  statusChat String   @map("status_chat") // open, closed
+  flagEnd    String   @default("N") @map("flag_end")
+  channel    String
+  dateCreate DateTime @default(now()) @map("date_create")
+
+  // Bot Service Fields
+  botActive    Boolean   @default(true) @map("bot_active") // Is bot handling this chat?
+  waitingAgent Boolean   @default(false) @map("waiting_agent") // Is user waiting for agent?
+  queuedAt     DateTime? @map("queued_at") // When user entered agent queue
+
+  // Closing Info
+  closedBy     String? @map("closed_by") // Agent ID who closed
+  closedByName String? @map("closed_by_name") // Agent Name who closed
+  closedReason String? @map("closed_reason") // Reason text
+  closedRole   String? @map("closed_role") // Role of closer
+
+  messages Message[]
+}
+
+// Individual Messages
+model Message {
+  id        Int    @id @default(autoincrement())
+  messageId String @unique @map("message_id") // Original CSV: message_id
+
+  interactionId String      @map("interaction_id")
+  interaction   Interaction @relation(fields: [interactionId], references: [interactionId])
+
+  flagTo      String @map("flag_to") // customer (inbound), agent (outbound)
+  senderType  String @default("visitor") @map("sender_type") // visitor, bot, agent
+  message     String @db.Text
+  messageType String @map("message_type") // text, audio, image, document, location
+
+  // Agent Specifics for Multi-Agent History
+  agentId    String? @map("agent_id") // ID of sender (if agent)
+  senderName String? @map("sender_name") // Display Name Snapshot
+  agentRole  String? @map("agent_role") // Role (agent, admin, etc) for UI styling
+
+  flagRead  Int      @default(0) @map("flag_read")
+  flagSent  Int      @default(1) @map("flag_sent")
+  createdAt DateTime @default(now()) @map("created_at")
+  meta      Json?    @map("meta") // Store metadata like location address
+
+  attachments Attachment[]
+}
+
+// File Attachments
+model Attachment {
+  id Int @id @default(autoincrement())
+
+  messageId String  @map("message_id")
+  message   Message @relation(fields: [messageId], references: [messageId])
+
+  fileOrigin String @map("file_origin") @db.Text
+  fileName   String @map("file_name")
+  fileType   String @map("file_type") // audio, image, document
+  fileSize   Int    @default(0) @map("file_size")
+  fileUrl    String @map("file_url") @db.Text
+  meta       Json?  @map("meta") // Width, height, duration, etc.
+
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+}

@@ -1,0 +1,10 @@
+$kind: http-request
+description: Retrieve messages for a specific conversation.
+url: "{{baseUrl}}/chat/conversations/:conversationId/messages?page=1&limit=50"
+method: GET
+queryParams:
+  page: "1"
+  limit: "50"
+pathVariables:
+  conversationId: ""
+order: 4000

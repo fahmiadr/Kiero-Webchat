@@ -1,0 +1,9 @@
+$kind: collection
+description: Webhook configuration and delivery endpoints.
+auth:
+  - id: 25bf929b-5bd9-44d2-8336-4c4e65cc42a4
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{apiKey}}"
+order: 5000

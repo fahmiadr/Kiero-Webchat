@@ -1,0 +1,15 @@
+$kind: http-request
+description: List chat conversations with optional pagination and status filter.
+url: "{{baseUrl}}/chat/conversations?page=1&limit=20&status=open"
+method: GET
+queryParams:
+  - key: page
+    value: "1"
+    description: Page number
+  - key: limit
+    value: "20"
+    description: Items per page
+  - key: status
+    value: open
+    description: Filter by status (open, closed, pending)
+order: 1000

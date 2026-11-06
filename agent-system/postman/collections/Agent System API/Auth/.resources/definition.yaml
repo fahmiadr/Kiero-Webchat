@@ -1,0 +1,4 @@
+$kind: collection
+description: Authentication & authorization endpoints (login, register, token
+  refresh, etc.).
+order: 2000

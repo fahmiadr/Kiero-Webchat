@@ -1,0 +1,31 @@
+$kind: collection
+description: >-
+  API collection for the Widget Live Chat Agent System backend.
+
+
+  Base URL defaults to `{{baseUrl}}` (e.g. `http://localhost:3000`).
+
+
+  Authentication: Most endpoints require a Bearer token passed via the
+  `Authorization` header. Set `{{authToken}}` in your environment.
+
+
+  ---
+
+
+  **Route modules discovered:** health, auth, chat, upload, webhook,
+  widgetClient, auditLogs, error.
+variables:
+  baseUrl: http://localhost:3000
+  authToken: ""
+  apiKey: ""
+  interactionId: ""
+  agentId: ""
+  agentName: ""
+  agentRole: ""
+auth:
+  - id: 2c2a2031-4ded-415b-85a0-ceb074ab75d3
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{authToken}}"

@@ -1,0 +1,28 @@
+node_modules
+npm-debug.log*
+.git
+.gitignore
+.env
+*.env
+.env.*
+!.env.example.*
+!.env.local
+!.env.production
+dist
+build
+logs
+*.log
+.vscode
+.agent
+.agents
+.husky
+*.md
+
+# Docker files (prevent recursive context & unnecessary transfer)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# IDE & misc
+*.swp
+*.swo

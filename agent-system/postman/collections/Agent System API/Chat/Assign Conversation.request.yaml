@@ -1,0 +1,15 @@
+$kind: http-request
+description: Assign a conversation to a specific agent.
+url: "{{baseUrl}}/chat/conversations/:conversationId/assign"
+method: POST
+headers:
+  Content-Type: application/json
+pathVariables:
+  conversationId: ""
+body:
+  type: text
+  content: |-
+    {
+      "agentId": "<agent_id>"
+    }
+order: 6000

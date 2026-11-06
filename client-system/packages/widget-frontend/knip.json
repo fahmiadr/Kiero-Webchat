@@ -1,0 +1,25 @@
+{
+    "$schema": "https://unpkg.com/knip@5/schema.json",
+    "project": [
+        "src/**/*.{js,jsx}"
+    ],
+    "paths": {
+        "@/*": [
+            "src/*"
+        ]
+    },
+    "typescript": "jsconfig.json",
+    "ignore": [],
+    "ignoreBinaries": [
+        "vite",
+        "eslint",
+        "biome",
+        "knip",
+        "size-limit"
+    ],
+    "ignoreDependencies": [
+        "@biomejs/biome",
+        "immer",
+        "size-limit"
+    ]
+}

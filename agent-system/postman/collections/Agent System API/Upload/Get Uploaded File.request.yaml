@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve/download an uploaded file by its ID.
+url: "{{baseUrl}}/upload/:fileId"
+method: GET
+pathVariables:
+  fileId: ""
+auth:
+  type: noauth
+order: 2000

@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+            "@components/*": [
+                "src/components/*"
+            ],
+            "@hooks/*": [
+                "src/hooks/*"
+            ],
+            "@stores/*": [
+                "src/stores/*"
+            ],
+            "@services/*": [
+                "src/services/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "vite.config.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

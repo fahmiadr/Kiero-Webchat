@@ -1,0 +1,3 @@
+$kind: collection
+description: Health-check endpoint(s) to verify the service is running.
+order: 1000

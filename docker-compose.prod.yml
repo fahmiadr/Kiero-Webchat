@@ -1,0 +1,196 @@
+# =============================================================================
+# Live Chat Widget — Production Docker Compose
+#
+# 6 services: Redis, PostgreSQL, Agent Backend, Agent Frontend,
+#              Widget Backend, Widget Frontend
+#
+# Usage:
+#   cp .env.example.production .env.production
+#   cp agent-system/apps/backend/.env.example.production agent-system/apps/backend/.env.production
+#   cp client-system/packages/widget-backend/.env.example.production client-system/packages/widget-backend/.env.production
+#   cp agent-system/apps/frontend/.env.example.production agent-system/apps/frontend/.env.production
+#   cp client-system/packages/widget-frontend/.env.example.production client-system/packages/widget-frontend/.env.production
+#   docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
+# =============================================================================
+
+include:
+  - redis/docker-compose.yml
+  - database/docker-compose.yml
+
+services:
+  # ─────────────────────────────────────────────────────────────
+  # Agent Backend — Fastify + Prisma + Socket.IO + BullMQ
+  # ─────────────────────────────────────────────────────────────
+  agent-backend:
+    build:
+      context: ./agent-system
+      dockerfile: docker/agent-backend.Dockerfile
+    container_name: agent-backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./agent-system/apps/backend/.env.production
+    ports:
+      - "127.0.0.1:${AGENT_BACKEND_PORT:-13003}:3003"
+    volumes:
+      - agent_uploads:/app/apps/uploads
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  # ─────────────────────────────────────────────────────────────
+  # Agent Frontend — Vite React SPA served via Nginx
+  # ─────────────────────────────────────────────────────────────
+  agent-frontend:
+    build:
+      context: ./agent-system
+      dockerfile: docker/agent-frontend.Dockerfile
+    container_name: agent-frontend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:${AGENT_FRONTEND_PORT:-14172}:4172"
+    networks:
+      - frontend
+    depends_on:
+      agent-backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4172/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─────────────────────────────────────────────────────────────
+  # Widget Backend — Fastify + Socket.IO + BullMQ
+  # ─────────────────────────────────────────────────────────────
+  widget-backend:
+    build:
+      context: ./client-system
+      dockerfile: docker/backend.Dockerfile
+    container_name: widget-backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./client-system/packages/widget-backend/.env.production
+    ports:
+      - "127.0.0.1:${WIDGET_BACKEND_PORT:-13002}:3002"
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  # ─────────────────────────────────────────────────────────────
+  # Widget Frontend — IIFE Bundle (embed.js) served via Nginx CDN
+  # ─────────────────────────────────────────────────────────────
+  widget-frontend:
+    build:
+      context: ./client-system
+      dockerfile: docker/frontend.Dockerfile
+    container_name: widget-frontend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:${WIDGET_FRONTEND_PORT:-14171}:4171"
+    networks:
+      - frontend
+    depends_on:
+      widget-backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4171/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# =================================================================
+# Networks
+# =================================================================
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  agent_uploads:
+    driver: local

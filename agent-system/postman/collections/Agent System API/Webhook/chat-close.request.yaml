@@ -1,0 +1,21 @@
+$kind: http-request
+name: chat:close
+description: Menutup chat aktif (close chat)
+url: "{{baseUrl}}/api/webhook/external"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "event": "chat:close",
+      "payload": {
+        "interactionId": "{{interactionId}}",
+        "agentId": "{{agentId}}",
+        "agentName": "{{agentName}}",
+        "agentRole": "{{agentRole}}",
+        "reason": "Agent closed the chat"
+      }
+    }
+order: 2000

@@ -1,0 +1,7 @@
+$kind: http-request
+description: Returns the health/status of the backend service. Typically no auth required.
+url: "{{baseUrl}}/health"
+method: GET
+auth:
+  type: noauth
+order: 1000

@@ -1,0 +1,11 @@
+$kind: http-request
+description: Upload a file (image, document, etc.). Returns the file URL/metadata.
+url: "{{baseUrl}}/upload"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: file
+      key: file
+      src: ""
+order: 1000
